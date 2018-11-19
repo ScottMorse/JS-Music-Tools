@@ -29,9 +29,15 @@ class Note {
         this.pitch = notePitches[this.letter]
         if(this.name.includes('#')){
             this.pitch += this.name.length - 1
+            if(this.pitch > 11){
+                this.pitch -= 12
+            }
         }
         else if(this.name.includes('b')){
             this.pitch -= this.name.length - 1
+            if(this.pitch < 0){
+                this.pitch += 12
+            }
         }
         
         if(this.octave){
@@ -59,6 +65,12 @@ class Note {
         var pitchOffset
         if(pitch != notePitches[letter]){
             pitchOffset = pitch - notePitches[letter]
+            if(pitchOffset > 5){
+                pitchOffset = pitch - 12
+            }
+            if(pitchOffset < -5){
+                pitchOffset = pitch + 12
+            }
             if(pitchOffset > 0){
                 name += "#".repeat(pitchOffset)
             }
@@ -109,6 +121,7 @@ class Note {
 
     enharmonic(prefer){
         prefer = prefer || null
+        let newLetter
         if(this.name.length == 1){
             return this
         }
@@ -228,7 +241,7 @@ class Mode{
         this.name = rootNote + ' ' + quality
         this.quality = quality
 
-        this.spelling = []
+        this.spelling = [this.rootNote]
         this.steps = modes[quality]
         var nextPitch = this.rootNote.pitch
         var nextLetter = this.rootNote.letter
@@ -283,8 +296,3 @@ class TimeSignature {
     }
     
 }
-
-console.log(new Note("C",4))
-console.log(new Mode("G","minor"))
-console.log(new Tempo(60))
-console.log(new TimeSignature(4,4,100))
